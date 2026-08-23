@@ -1,1 +1,92 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Super Ace — Free Demo</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#17052b;font-family:Arial,sans-serif;color:#fff}
+.app{width:min(100%,520px);margin:auto;min-height:100vh;padding:10px 8px 25px;
+background:radial-gradient(circle at 50% 8%,#a52cf0 0,#4d087e 25%,#18042d 72%)}
+.top{display:flex;align-items:center;justify-content:center;gap:8px}
+.crown{font-size:45px;filter:drop-shadow(0 0 8px #ffd92e)}
+.logo{font-size:39px;font-weight:1000;color:#ffd72a;text-shadow:0 4px #7a2c00,0 0 18px #ffdb3b}
+.ace{font-size:30px;font-weight:1000;color:#fff4a8;text-shadow:0 3px #712400;text-align:center;margin-top:-3px}
+.badge{display:inline-block;background:#fff0a0;color:#6d2300;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:900;margin:5px 0 10px}
+.game{position:relative;background:linear-gradient(#ffed75,#d07a00);padding:6px;border-radius:14px;box-shadow:0 0 35px #ffc52d}
+.reels{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:#3c2000;border-radius:9px;overflow:hidden}
+.card{height:112px;background:linear-gradient(#fffde8,#d8d1bd);display:flex;flex-direction:column;justify-content:center;align-items:center;color:#111;font-weight:1000;position:relative}
+.card .rank{position:absolute;top:5px;left:7px;font-size:21px}.card .symbol{font-size:52px;line-height:1}
+.red{color:#a00000!important}.blue{color:#1d3c75!important}
+.win{animation:flash .45s infinite alternate}
+@keyframes flash{from{filter:brightness(1)}to{filter:brightness(1.8);box-shadow:inset 0 0 25px #ffe900}}
+.mult{display:flex;justify-content:space-between;padding:7px 8px 0;color:#ffd72a;font-size:21px;font-weight:1000;text-shadow:0 2px #6e2300}
+.controls{display:flex;gap:10px;margin:14px 0}
+button{border:0;border-radius:13px;padding:15px 10px;font-size:19px;font-weight:1000;cursor:pointer}
+.spin{flex:2;background:linear-gradient(#39d65d,#119d38);color:#fff;box-shadow:0 4px #086b26}
+.reset{flex:1;background:linear-gradient(#f54a5c,#ce2638);color:#fff;box-shadow:0 4px #7e1722}
+button:disabled{opacity:.6}
+.status{text-align:center;font-size:16px;font-weight:800;min-height:25px}
+.warning{margin-top:13px;padding:10px;border:1px solid #8c5ab0;border-radius:10px;background:#2a1040;color:#eadcf4;font-size:12px}
+@media(max-width:390px){.card{height:91px}.card .symbol{font-size:42px}.logo{font-size:32px}.ace{font-size:25px}.crown{font-size:37px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div class="crown">♛</div><div class="logo">X20</div></div>
+  <div class="ace">SUPER ACE</div>
+  <div style="text-align:center"><span class="badge">FREE PLAY DEMO</span></div>
 
+  <section class="game">
+    <div class="reels" id="reels"></div>
+    <div class="mult"><span>×10</span><span>×6</span><span>×10</span><span>×8</span><span>×2</span></div>
+  </section>
+
+  <div class="controls">
+    <button class="spin" id="spin">▶ SPIN</button>
+    <button class="reset" id="reset">↻ RESET</button>
+  </div>
+  <div class="status" id="status">স্পিন চাপুন — এটি শুধু ফ্রি ডেমো।</div>
+  <div class="warning">কোনো deposit, betting, cash বা withdrawal নেই।</div>
+</div>
+
+<script>
+const symbols=[
+ {r:"A",s:"♠",c:""},
+ {r:"Q",s:"♛",c:"red"},
+ {r:"J",s:"♜",c:"blue"},
+ {r:"A",s:"♠",c:""},
+ {r:"Q",s:"♛",c:"red"}
+];
+const reels=document.getElementById("reels"),status=document.getElementById("status"),spin=document.getElementById("spin");
+function draw(){
+  reels.innerHTML="";
+  for(let i=0;i<20;i++){
+    const x=symbols[Math.floor(Math.random()*symbols.length)];
+    const d=document.createElement("div");
+    d.className="card "+x.c;
+    d.innerHTML=`<div class="rank">${x.r}</div><div class="symbol">${x.s}</div>`;
+    reels.appendChild(d);
+  }
+}
+spin.onclick=()=>{
+  spin.disabled=true; status.textContent="কার্ড স্পিন হচ্ছে…";
+  let n=0;
+  const timer=setInterval(()=>{
+    draw(); n++;
+    if(n>=15){
+      clearInterval(timer);
+      const cards=[...document.querySelectorAll(".card")];
+      const start=Math.floor(Math.random()*15);
+      for(let i=start;i<Math.min(start+5,cards.length);i++) cards[i].classList.add("win");
+      status.textContent="ডেমো রাউন্ড শেষ — আবার SPIN চাপুন।";
+      spin.disabled=false;
+    }
+  },90);
+};
+document.getElementById("reset").onclick=()=>{draw();status.textContent="রিসেট হয়েছে। স্পিন করতে প্রস্তুত।"};
+draw();
+</script>
+</body>
+</html>
